@@ -1,9 +1,15 @@
 from re import *
 from collections import OrderedDict
+from functions import *
+from tkinter import *
+import tkinter as tk
+import tkinter.ttk as ttk
 
 t_list=OrderedDict()
 nt_list=OrderedDict()
 production_list=[]
+
+# ------------------------------------------------------------------
 
 class Terminal:
 
@@ -13,6 +19,7 @@ class Terminal:
     def __str__(self):
         return self.symbol
 
+# ------------------------------------------------------------------
 
 class NonTerminal:
 
@@ -28,8 +35,9 @@ class NonTerminal:
 
     def add_follow(self, symbols): self.follow |= set(symbols)
 
+# ------------------------------------------------------------------
 
-def compute_first(symbol): 
+def compute_first(symbol): #chr(1013) corresponds (ϵ) in Unicode
 
     global production_list, nt_list, t_list
 
@@ -46,6 +54,8 @@ def compute_first(symbol):
         if body=='':
             nt_list[symbol].add_first(chr(1013))
             continue
+
+        
 
         for i, Y in enumerate(body):
 # for X -> Y1 Y2 ... Yn, first(X) = non-epsilon symbols in first(Y1)
@@ -64,18 +74,20 @@ def compute_first(symbol):
 
     return nt_list[symbol].first
 
+# ------------------------------------------------------------------
 
-def get_first(symbol): 
+def get_first(symbol): #wrapper method for compute_first
 
     return compute_first(symbol)
 
+# ------------------------------------------------------------------
 
 def compute_follow(symbol):
 
     global production_list, nt_list, t_list
 
 # if A is the start symbol, follow (A) = $
-    if symbol == list(nt_list.keys())[0]: 
+    if symbol == list(nt_list.keys())[0]: #this is okay since I'm using an OrderedDict
         nt_list[symbol].add_follow('$')
 
     for prod in production_list:    
@@ -105,69 +117,54 @@ def get_follow(symbol):
 
 # ------------------------------------------------------------------    
 
-def main(pl=None):
+def main(MainInput):
 
-    print('''Enter the grammar productions (enter 'end' or return to stop)
-#(Format: "A->Y1Y2..Yn" {Yi - single char} OR "A->" {epsilon})''')
-
+    print("start")
     global production_list, t_list, nt_list
     ctr=1
 
     #t_regex, nt_regex=r'[a-z\W]', r'[A-Z]'
-
-    if pl==None:
-
-        while True:
+    for Input in MainInput:
 
             #production_list.append(input('{})\t'.format(ctr)))
             
-            production_list.append(input().replace(' ', ''))
+        production_list.append(Input.replace(' ', ''))
 
-            if production_list[-1].lower() in ['end', '']: 
-                del production_list[-1]
-                break
+        if production_list[-1].lower() in ['end', '']: 
+            del production_list[-1]
+            break
 
-            head, body=production_list[ctr-1].split('->')
+        head, body=production_list[ctr-1].split('->')
 
-            if head not in nt_list.keys():
-                nt_list[head]=NonTerminal(head)
+        if head not in nt_list.keys():
+            nt_list[head]=NonTerminal(head)
 
             #for all terminals in the body of the production
-            for i in body:
-                if not 65<=ord(i)<=90:
-                    if i not in t_list.keys(): t_list[i]=Terminal(i)
+        for i in body:
+            if not 65<=ord(i)<=90:
+                if i not in t_list.keys(): t_list[i]=Terminal(i)
             #for all non-terminals in the body of the production
-                elif  i not in nt_list.keys(): nt_list[i]=NonTerminal(i)
+            elif  i not in nt_list.keys(): nt_list[i]=NonTerminal(i)
                 
-            ctr+=1
+        ctr+=1
+    
+    print("end")
 
     '''if pl!=None:
-
         for i, prod in enumerate(pl):
-
             if prod.lower() in ['end', '']:
                 del pl[i:]
                 break
-
             head, body=prod.split('->')
-
             if head not in nt_list.keys():
                 nt_list[head]=NonTerminal(head)
-
             #for all terminals in the body of the production
             for i in finditer(t_regex, body):
                 s=i.group()
                 if s not in t_list.keys(): t_list[s]=Terminal(s)
-
             #for all non-terminals in the body of the production
             for i in finditer(nt_regex, body):
                 s=i.group()
                 if s not in nt_list.keys(): nt_list[s]=NonTerminal(s)'''
-                
-    return pl
+
 # ------------------------------------------------------------------
-
-if __name__=='__main__':
-    
-    main()
-
