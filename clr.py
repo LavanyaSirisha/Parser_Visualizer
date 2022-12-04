@@ -7,6 +7,9 @@ from tkinter import ttk
 from firstfollow import *
 import firstfollow
 from firstfollow import production_list, nt_list as ntl, t_list as tl
+import matplotlib
+matplotlib.use('Agg')
+
 nt_list, t_list=[], []
 Data = []
 class State:
@@ -329,7 +332,8 @@ ttk.Label(frame, text='',background='#D9D8D7').pack(anchor=S,fill=X)
 
 root.mainloop()
 
-
+# GUI textbox for string entry
+# Statewise output  
 '''
 Data.append("Enter the string to be parsed")
 Input=input()+'$'
@@ -367,7 +371,3 @@ try:
 except:
     Data.append('    String INCORRECT for given Grammar!')
 '''
-
-
-
-
