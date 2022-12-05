@@ -16,12 +16,12 @@ clr_btn = tk.Button(frame,width=20,font=('calibri', 20, 'bold'),bd=10,bg="#4a7ab
 # lalr_btn = tk.Button(frame,width=20,font=('calibri', 20, 'bold'),bd=10,bg="#4a7abc",foreground = 'white smoke',text = "LALR Parser",command=call_lalr,cursor="hand2")
 exit_btn = tk.Button(frame,width=10,font=('calibri', 20, 'bold'),bd=10,bg="#D9290e",foreground = 'white smoke',text = "CLOSE",command=root.destroy,cursor="hand2")
 
-tk.Label(frame,text="BOTTOM UP PARSERS",foreground="black",bg='#D9D8D7',pady=20,font=('ariel', 30, 'bold','underline')).pack()
-slr_btn.pack()
+# tk.Label(frame,text="BOTTOM UP PARSERS",foreground="black",bg='#D9D8D7',pady=20,font=('ariel', 30, 'bold','underline')).pack()
+# slr_btn.pack()
 tk.Label(frame,text=" ",bg='#D9D8D7').pack()
 clr_btn.pack()
-tk.Label(frame,text=" ",bg='#D9D8D7').pack()
-lalr_btn.pack()
+# tk.Label(frame,text=" ",bg='#D9D8D7').pack()
+# lalr_btn.pack()
 tk.Label(frame,text=" ",bg='#D9D8D7').pack()
 exit_btn.pack()
 

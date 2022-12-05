@@ -7,8 +7,8 @@ from tkinter import ttk
 from firstfollow import *
 import firstfollow
 from firstfollow import production_list, nt_list as ntl, t_list as tl
-import matplotlib
-matplotlib.use('Agg')
+# import matplotlib
+# matplotlib.use('Agg')
 
 nt_list, t_list=[], []
 Data = []
@@ -284,6 +284,7 @@ bottomframe.configure(background='#D9D8D7')
 bottomframe.pack()
 
 MainInput = []
+str_Input=tk.StringVar()
 Input = tk.StringVar()
 
 ttk.Label(frame, text ="Enter the Productions :",background='#D9D8D7').pack(padx=10,pady=10,anchor=W)
@@ -329,22 +330,148 @@ def submit_input():
         #rc+=1
 
 def accept_string():
-    Data.append("Enter the string to be parsed")
-    Input=input()+'$'
+
+    # root = tk.Tk()
+    # root.geometry("600x50")
+    # root.title("String Acceptance")
+    # root.config(bg='#D9D8D7')
+    # paddings = {'padx': 5, 'pady': 5}
+
+
+    # style = ttk.Style()
+    # style.configure("TButton", font=("Calibri", 15, "bold"), borderwidth=4)
+    # style.configure("TLabel", font=("Calibri", 15,"bold"), borderwidth=4)
+    # style.configure("TEntry", font=("Calibri", 15,"bold"), borderwidth=4)
+    # style.map("TButton", foreground=[("active", "disabled", "green")],background=[("active", "black")])
+    # #style.theme_use("classic")
+
+    # # Data.append("Enter the string to be parsed")
+    # # str_Input=input()+'$'
+    # str_Input=tk.StringVar()
+
+    # ttk.Label(frame, text ="Enter the Productions :",background='#D9D8D7').pack(padx=10,pady=10,anchor=W)
+    # NewInputEntry = ttk.Entry(frame,width=50,textvariable=str_Input)
+    # NewInputEntry.pack(ipadx=10,ipady=10,padx=10,anchor=W)
+
+    # table=None
+
+    # frame = tk.Tk()
+    # frame.title("TextBox Input")
+    # frame.geometry('400x200')
+    # # Function for getting Input
+    # # from textbox and printing it 
+    # # at label widget
+
+    # def printInput():
+    #     inp = inputtxt.get(1.0, "end-1c")
+    #     lbl.config(text = "Provided Input: "+inp)
+
+    # # TextBox Creation
+    # inputtxt = tk.Text(frame,height = 5,width = 20)
+    # inputtxt.pack()
+
+    # # Button Creation
+    # printButton = tk.Button(frame,text = "Print",command = printInput)
+    # printButton.pack()
+
+    # # Label Creation
+    # lbl = tk.Label(frame, text = "")
+    # lbl.pack()
+    # frame.mainloop()
+
+
+
+    # root= tk.Tk()
+
+    # canvas1 = tk.Canvas(root, width=400, height=300, relief='raised')
+    # canvas1.pack()
+
+    # label1 = ttk.Label(root, text='Calculate the Square Root')
+    # label1.config(font=('helvetica', 14))
+    # canvas1.create_window(200, 25, window=label1)
+
+    # label2 = ttk.Label(root, text='Type your Number:')
+    # label2.config(font=('helvetica', 10))
+    # canvas1.create_window(200, 100, window=label2)
+
+    # entry1 = ttk.Entry(root) 
+    # canvas1.create_window(200, 140, window=entry1)
+
+    # def get_square_root():
+    #     x1 = entry1.get()
+        
+    #     label3 = ttk.Label(root, text='The Square Root of ' + x1 + ' is:', font=('helvetica', 10))
+    #     canvas1.create_window(200, 210, window=label3)
+        
+    #     label4 = ttk.Label(root, text=float(x1)**0.5, font=('helvetica', 10, 'bold'))
+    #     canvas1.create_window(200, 230, window=label4)
+        
+    # button1 = ttk.Button(text='Get the Square Root', command=get_square_root, bg='brown', fg='white', font=('helvetica', 9, 'bold'))
+    # canvas1.create_window(200, 180, window=button1)
+
+    # root.mainloop()
+
+
+    from tkinter import ttk
+
+    #Create an instance of Tkinter frame
+    win= tk.Tk()
+
+    #Set the geometry of Tkinter frame
+    win.geometry("750x250")
+    win.title("String Acceptance")
+    win.config(bg='#D9D8D7')
+    paddings = {'padx': 5, 'pady': 5}
+
+    ttk.Label(win, text ="Enter the String :",background='#D9D8D7').pack(padx=10,pady=10,anchor=W)
+
+    #Create an Entry widget to accept User Input
+    global entry
+    entry = Entry(win, width= 40)
+    entry.focus_set()
+    entry.pack()
+
+    def display_text():
+        # global entry
+        # string= entry.get()
+        # label.configure(text=string)
+        return 
+
+    #Initialize a Label to display the User Input
+    # label=Label(win, text="", font=("Courier 22 bold"))
+    # label.pack()
+
+    #Create a Button to validate Entry Widget
+    ttk.Button(win, text= "Check String Acceptance",width= 30, command= display_text).pack(pady=20)
+
+    win.mainloop()
+
+
+
+
+
+
+
+
+
+
+
+
+
     try:
         stack=['0']
         a=list(table.items())
         Data.append("productions    : "+str(production_list))
-        Data.append('stack'+"                    "+'Input')
-        Data.append(str(*stack)+"                  "+str(*Input))
-        while(len(Input)!=0):
-            b=list(a[int(stack[-1])][1][Input[0]])
+        Data.append('stack'+"                    "+'str_Input')
+        Data.append(str(*stack)+"                  "+str(*str_Input))
+        while(len(str_Input)!=0):
+            b=list(a[int(stack[-1])][1][str_Input[0]])
             if(b[0][0]=="s" ):
                     #s=Input[0]+b[0][1:]
-                stack.append(Input[0])
+                stack.append(str_Input[0])
                 stack.append(b[0][1:])
-                Input=Input[1:]
-                Data.append(str(*stack)+"                  "+str(*Input))
+                str_Input=str_Input[1:]
+                Data.append(str(*stack)+"                  "+str(*str_Input))
             elif(b[0][0]=="r" ):
                 s=int(b[0][1:])
                     #print(len(production_list),s)
@@ -358,7 +485,7 @@ def accept_string():
                     #print(s,b)
                 stack+=list(prod[0])
                 stack.append(s)
-                Data.append(str(*stack)+"                  "+str(*Input))
+                Data.append(str(*stack)+"                  "+str(*str_Input))
             elif(b[0][0]=="a"):
                 Data.append("    String Accepted!")
                 break
