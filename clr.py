@@ -279,6 +279,10 @@ frame = tk.Frame(root)
 frame.configure(background='#D9D8D7')
 frame.pack()
 
+bottomframe = tk.Frame(root)
+bottomframe.configure(background='#D9D8D7')
+bottomframe.pack()
+
 MainInput = []
 Input = tk.StringVar()
 
@@ -324,9 +328,48 @@ def submit_input():
     #    ttk.Label(frame, text=i,background='#D9D8D7').pack(side=BOTTOM)
         #rc+=1
 
+def accept_string():
+    Data.append("Enter the string to be parsed")
+    Input=input()+'$'
+    try:
+        stack=['0']
+        a=list(table.items())
+        Data.append("productions    : "+str(production_list))
+        Data.append('stack'+"                    "+'Input')
+        Data.append(str(*stack)+"                  "+str(*Input))
+        while(len(Input)!=0):
+            b=list(a[int(stack[-1])][1][Input[0]])
+            if(b[0][0]=="s" ):
+                    #s=Input[0]+b[0][1:]
+                stack.append(Input[0])
+                stack.append(b[0][1:])
+                Input=Input[1:]
+                Data.append(str(*stack)+"                  "+str(*Input))
+            elif(b[0][0]=="r" ):
+                s=int(b[0][1:])
+                    #print(len(production_list),s)
+                l=len(production_list[s])-3
+                    #print(l)
+                prod=production_list[s]
+                l*=2
+                l=len(stack)-l
+                stack=stack[:l]
+                s=a[int(stack[-1])][1][prod[0]]
+                    #print(s,b)
+                stack+=list(prod[0])
+                stack.append(s)
+                Data.append(str(*stack)+"                  "+str(*Input))
+            elif(b[0][0]=="a"):
+                Data.append("    String Accepted!")
+                break
+    except:
+        Data.append('    String INCORRECT for given Grammar!')
+
 ttk.Button(frame, text = "Add Production", command = add_input).pack(side=LEFT,padx=10,pady=10)
 ttk.Button(frame, text = "Submit Productions", command = submit_input).pack(side=LEFT,padx=10,pady=10)
 ttk.Button(frame, text = "Exit", command = root.destroy).pack(side=LEFT,padx=10,pady=10)
+ttk.Button(bottomframe, text = "Accept String", command = accept_string).pack(side=LEFT,padx=10,pady=10)
+
 ttk.Label(frame, text='',background='#D9D8D7').pack(anchor=S,fill=X)
 
 
