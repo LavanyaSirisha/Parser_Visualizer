@@ -291,7 +291,7 @@ ttk.Label(frame, text ="Enter the Productions :",background='#D9D8D7').pack(padx
 InputEntry = ttk.Entry(frame,width=50,textvariable=Input)
 InputEntry.pack(ipadx=10,ipady=10,padx=10,anchor=W)
 
-table = None
+table = OrderedDict()
 
 def display():
 
@@ -299,7 +299,7 @@ def display():
     scrollbar1.pack( side = RIGHT, fill = Y )
 
     scrollbar2 = Scrollbar(root, bg="green")
-    scrollbar2.pack( side = RIGHT, fill = Y )
+    scrollbar2.pack( side = BOTTOM, fill = X )
 
     mylist = Listbox(root,yscrollcommand=scrollbar1.set,xscrollcommand=scrollbar2.set,background='#D9D8D7',font=("Calibri", 15,"bold"),height=100,width=0,highlightthickness=5)
 
@@ -319,6 +319,7 @@ def add_input():
     print(Input.get(),MainInput)
 
 def submit_input():
+    global table
     print("entered submit")
     MainInput.append(Input.get())
     table = main(MainInput)
@@ -328,6 +329,63 @@ def submit_input():
     #for i in Data:
     #    ttk.Label(frame, text=i,background='#D9D8D7').pack(side=BOTTOM)
         #rc+=1
+
+def oracle(query:str) -> list:
+    global table
+    Input = query + '$'
+    state_log = []
+
+    try:
+        stack = ['0']
+        a = list(table.items())
+        # a=list()
+        # Data.append("productions    : "+str(production_list))
+        # Data.append('stack'+"                    "+'Input')
+        # Data.append(str(*stack)+"                  "+str(*Input))
+        state_log.append("productions    : " + str(production_list))
+        state_log.append('stack' + "                    " + 'Input')
+        state_log.append(str(''.join([*stack])) + "                  " + Input)
+        
+
+        while(len(Input) != 0):
+            b = list(a[ int(stack[-1]) ] [1] [Input[0]]) # extract production rule for given input from table
+            
+            if (b[0][0] == "s"): # If shifting
+                    #s=Input[0]+b[0][1:]
+                stack.append(Input[0]) # Append input string to stack
+                stack.append(b[0][1:]) # Append state of transition to stack
+                Input=Input[1:] # pop leftmost entry (Input[0])
+                # Data.append(str(*stack)+"                  "+str(*Input))
+                state_log.append(str(''.join([*stack])) + "                  " + Input)
+
+            elif(b[0][0]=="r" ):
+                
+                s=int(b[0][1:])
+                    #print(len(production_list),s)
+                l=len(production_list[s])-3
+                    #print(l)
+                prod=production_list[s]
+                l*=2
+                l=len(stack)-l
+                stack=stack[:l]
+                s=a[int(stack[-1])][1][prod[0]]
+                    #print(s,b)
+                stack+=list(prod[0])
+                stack.append(s)
+                # Data.append(str(*stack)+"                  "+str(*Input))
+                state_log.append(str(''.join([*stack]))+"                  " + Input)
+            
+            elif(b[0][0]=="a"):
+                # Data.append("    String Accepted!")
+                state_log.append("    String Accepted!")
+                break
+    except:
+        # Data.append('    String INCORRECT for given Grammar!')
+        state_log.append('    String INCORRECT for given Grammar!')
+    
+    return state_log
+
+index = 0
 
 def accept_string():
 
@@ -418,7 +476,7 @@ def accept_string():
     win= tk.Tk()
 
     #Set the geometry of Tkinter frame
-    win.geometry("750x250")
+    win.geometry("650x125")
     win.title("String Acceptance")
     win.config(bg='#D9D8D7')
     paddings = {'padx': 5, 'pady': 5}
@@ -430,10 +488,64 @@ def accept_string():
     entry = Entry(win, width= 40)
     entry.focus_set()
     entry.pack()
+    # TODO: Separate input strings and pass to oracle(input) to generate [ outputs... ]
+    # input_list = string_input.split(sep=';')
+    # print(string_input)
 
-    def display_text():
-        # global entry
-        # string= entry.get()
+    def cascade_input():
+        global entry
+        string_inputs = entry.get().split(sep=';')
+        print(string_inputs)
+        
+        prophecies = [ oracle(string_input) for string_input in string_inputs ]
+
+        global index
+        index = 0
+
+        def orate(prophecy_index:int):
+            display_win = tk.Tk()
+
+            display_win.geometry("600x500")
+            display_win.title("Prophecy")
+            display_win.config(bg='#D9D8D7')
+
+            scrollbar1 = Scrollbar(root, bg="green")
+            scrollbar1.pack( side = RIGHT, fill = Y )
+
+            scrollbar2 = Scrollbar(root, bg="green")
+            scrollbar2.pack( side = BOTTOM, fill = X )
+
+            mylist = Listbox(display_win,yscrollcommand=scrollbar1.set,xscrollcommand=scrollbar2.set,background='#D9D8D7',font=("Calibri", 15,"bold"),height=100,width=0,highlightthickness=5)
+            
+            for state in prophecies[prophecy_index]:
+                mylist.insert(END, '  ' + state)
+                #ttk.Label(frame, text=i,background='#D9D8D7').pack(anchor=SW)
+
+            mylist.pack(anchor=CENTER, fill = BOTH,padx=60,pady=10,ipadx=20,ipady=20 )
+            scrollbar1.config(command=mylist.yview)
+            scrollbar2.config(command=mylist.xview)
+
+            def PreviousPage():
+                global index
+                if index > 0: 
+                    index -= 1
+                    display_win.destroy()
+                    print('new index:', index)
+                    orate(index)
+
+            def NextPage():
+                global index
+                if index < len(prophecies) - 1: 
+                    index += 1
+                    display_win.destroy()
+                    print('new index:', index)
+                    orate(index)
+
+
+            ttk.Button(display_win, text = "previous", width = 30, command=PreviousPage).place(x=10,y=460)
+            ttk.Button(display_win, text = "next", width = 30, command=NextPage).place(x=400,y=460)
+
+        orate(0)
         # label.configure(text=string)
         return 
 
@@ -442,7 +554,7 @@ def accept_string():
     # label.pack()
 
     #Create a Button to validate Entry Widget
-    ttk.Button(win, text= "Check String Acceptance",width= 30, command= display_text).pack(pady=20)
+    ttk.Button(win, text= "Check String Acceptance",width= 30, command= cascade_input).pack(pady=20)
 
     win.mainloop()
 
